@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .post-create {
+        max-width: 100%;
+    }
+    .name1 {
+        display: flex;
+        margin-bottom: 10px;
+        margin-top: 20px;
+        width: 100%;
+    }
+    .button {
+        margin-bottom: 20px;
+    }
+</style>    
+
+<section class="container post-create mt-5 pt-5 bg-white custom-shadow rounded">
+    <form action="{% url 'main:post_create' %}" class="send_mes" method="post">
+        {% csrf_token %}
+        <h3 class="post-itself">Оставьте свой отзыв</h3>
+        <input type="text" name="good" class="post-itself name1" placeholder="Достоинства">
+        <input type="text" name="bad" class="post-itself name1" placeholder="Недостатки">
+        <input type="text" name="text" class="post-itself name1" placeholder="Ваш отзыв">
+        <button class="post-itself button btn btn-outline-success" type="submit">Создать</button>
+    </form>
+</section>    
+{% endblock %}

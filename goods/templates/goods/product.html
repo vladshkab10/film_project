@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'includes/cart_button.html' %}
+<style>
+    .color-red {
+        color: red;
+    }
+</style>
+<div class="container mt-5" id="like-items-container">
+    <div class="card mb-4 custom-shadow">
+        <div class="row">
+            <!-- Миниатюры -->
+            <div class="col-md-4">
+                <img src="{{product.image.url}}"
+                    class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1">
+            </div>
+            <div class="col-md-4 ">
+                <p class="product_id mt-3">Артикул: {{product.display_id}}</p>
+            </div>
+            <!-- Увеличить изображение в модальном окне -->
+            <div class="modal fade" id="imageModal1" tabindex="-1"
+                aria-labelledby="imageModal1Label" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="imageModal1Label">{{product.name}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            <img src="{{product.image.url}}"
+                                class="img-fluid" alt="Изображение 1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Описание товара -->
+        <div class="card-body">
+            <p class="card-text">Цена: <strong>{{product.sell_price}} $</strong></p>
+            <h5 class="card-title">{{product.name}}</h5>
+            <p style="max-width: 400px;" class="card-text">{{product.description}}</p>
+            {% if product.quantity < 10 %}
+            <h5 class="color-red">Поторопитесь! Осталось всего {{product.quantity}} товаров</h5>
+            {% endif %}
+            {% if product.quantity > 0 %}
+            <a href="{% url 'carts:cart_add' %}" class="btn btn-dark add-to-cart" data-product-id="{{product.id}}">
+            {% csrf_token %}
+            Добавить в корзину</a>
+            <a href="{% url 'carts:chosens_add' %}" class="btn btn-dark add-to-chosen" data-product-id="{{product.id}}">
+            {% csrf_token %}
+            Добавить в избранное</a>
+            {% else %}
+            <h2>Товара нет в наличии</h2>
+            {% endif %}
+            <div class="feedback">
+                <a {% if product.is_liked == False %}href="{% url 'goods:like' product.id %}"{% else %}href="{% url 'goods:remove_like' product.id %}"{% endif %} class="likes add_like"><img src="{% static 'deps\images\2849826_finger_interaction_hand_like_multimedia_icon(1).png' %}" alt=""></a>
+                <div id="likes-count" class="likes">{{ product.likes }}</div>
+                <a class="likes" {% if product.is_disliked == False %}href="{% url 'goods:dislike' product.id %}"{% else %}href="{% url 'goods:remove_dislike' product.id %}"{% endif %}><img src="{% static 'deps\images\2849816_finger_hand_like_multimedia_icon(1).png' %}" alt=""></a>
+                <div class="likes">{{ product.dislikes }}</div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

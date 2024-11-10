@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load goodstags %}
+
+{% load static %}
+
+{% block modal_cart %}
+{% include 'includes/cart_button.html' %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
+
+{% endblock %}
+
+
+
+{% block content %}
+<style>
+    .category-container {
+        max-width: 330px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+    .self-category {
+        background-color: white;
+        border-radius: 10px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        border: 1px solid;
+    }
+    .index-image {
+        height: 365px;
+        border-radius: 10px;
+    }
+    .self-category:hover {
+        transform: scale(1.05);
+        transition: 0.2s;
+    }
+    .self-category:active {
+        transform: scale(0.95);
+        transition: 0.2s;
+    }
+    .self-category-new {
+        text-align: center;
+    }
+    .category-name {
+        margin-bottom: 30px;
+        margin-top: 20px;
+    }
+    .category-name:hover {
+        color: purple;
+        transition: 0.5s;
+    }
+</style>
+<div class="container mt-5 bg-white custom-shadow rounded">
+    <h1 style="text-align: center"><strong>Добро пожаловать в ООО МОСТРЕЙДКОМ</strong></h1>
+    <h5 style=" text-align: center;">Мы предлагаем самую современную и лучшую мебель для вашего комфорта! Есть вопросы? Обратитесь на нашу горячую линию по номеру: +79891816392 (Ринат)</h5>
+</div>
+
+<div class="container category category-container">
+    <h1 style="color: lightblack" class="self-category-new"><strong>Мы предлагаем:</strong></h1>
+    {% tag_categories as categories %}
+    {% for category in categories %}
+    <a href="{% url 'goods:index' category.slug %}">
+        <div class="self-category">
+            <a class="map dropdown-item" href="{% url 'goods:index' category.slug %}"><h2 class="category-name">{{ category.name }}</h2></a>
+            <a class="map dropdown-item" href="{% url 'goods:index' category.slug %}"><img class="index-image" src="{{ category.image.url }}" alt=""></a>
+        </div>
+    </a>
+    
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+{% block footer %}
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Shkab Web Studio 2024</p>
+    </div>
+</footer>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% load static %}
+{% load carts_tags %}
+{% user_chosens request as chosens %}
+{% if chosens %}
+<h3 class="text-center mb-4">Избранное</h3>
+{% for chosen in chosens %}
+<div class="card mb-3 text-bg-light shadow-lg">
+        <div class="card-header">
+            <h5 class="card-title">{{ chosen.product.name }}</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row text-center">
+                    <div class="col p-0">
+                        <p>{{ chosen.product.price }}</p>
+                    </div>
+                    <div class="col p-0"><strong> {{chosen.product.sell_price}} $</strong></div>
+                    <div class="col p-0">
+                    <a href="{% url "carts:chosens_remove" %}" class="remove-from-chosen"
+                        data-chosen-id="{{ chosen.id }}">
+                            {% csrf_token %}
+                            <img class="mx-1" src="{% static "deps/icons/trash3-fill.svg" %}"
+                                alt="Catalog Icon" width="16" height="16">
+                    </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+{% endfor %}
+
+</div>
+{% else %}
+<h3 class="text-center mb-4">В избранном пусто</h3>
+{% endif %}
+
+

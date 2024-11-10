@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+<style>
+    .post {
+        background-color: lightgrey;
+        border-radius: 8px;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    .no-posts {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .img-index {
+        height: 300px;
+        text-align: center;
+    }
+</style>
+<div class="container mt-5 bg-white custom-shadow rounded">
+    <div class="posts container">
+        {% if posts %}
+            <h1 class="no-posts">Что вы пишите о нас?</h1>
+            {% for post in posts %}
+            <div class="post container">
+                <p class="post-title">{{ post.date }}</p>
+                    <h5>{{ post.user.username }}</h5>
+                    <h5 class="post-title">Достоинства: {{ post.good }}</h5>
+                    <h5 class="post-title">Недостатки: {{ post.bad }}</h5>
+                    <h5 class="post-text">{{ post.text }}</h5>
+                    <a class="message2" href="{% url 'main:remove_post' post.id %}">
+                        <img class="mx-new" src="{% static 'deps/icons/trash3-fill.svg' %}"
+                         width="16" height="16">
+                    </a>
+            </div>   
+            {% endfor %}
+        {% else %}
+        <div class="container">
+            <h1 class="no-posts">Отзывов пока нет.</h1>
+            <h1 class="no-posts">Станьте первым, кто его оставит!</h1>
+        </div>
+            
+            
+        {% endif %}
+    </div>    
+</div>
+{% endblock %}

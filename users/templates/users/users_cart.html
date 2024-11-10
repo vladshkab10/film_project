@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load carts_tags %}
+
+{% block content %}
+{% user_carts request as carts %}
+<div class="row">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
+                <div class="container" id="cart-items-container">
+                    <!-- Разметка корзины -->
+                    {% include 'includes/includes.html' %}
+                    <!-- Закончилась разметка корзины -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

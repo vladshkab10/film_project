@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load carts_tags %}
+{% user_chosens request as chosens %}
+{% block content %}
+
+<div class="row">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
+                <div class="container" id="chosen-items-container">
+                    <!-- Разметка корзины -->
+                    {% include 'includes/chosens_include.html' %}
+                    <!-- Закончилась разметка корзины -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .chat {
+        text-align: center;
+        align-items: center;
+        border: 1px solid;
+    }
+    .message {
+        width: 200px;
+        height: 30px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border: none;
+        border-radius: 5px;
+        height: 35px;
+    }
+    .chat-indeed {
+        background-color: lightblue;
+    }
+    .mx-new {
+        margin-bottom: 15px;
+    }
+    .date {
+        font-size: 18px;
+    }
+    .container-chat {
+        max-width: 400px;
+    }
+    .color-green {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+</style>
+<div class="container-chat container">
+    <div class="chat mt-5 bg-white rounded">
+        {% if chats %}
+        {% for chat in chats %}
+        <div class="message1 chat-indeed">
+            
+            <p class="date">{{ chat.date.day }}.{{ chat.date.month }}.{{ chat.date.year }}</p>
+            {% if request.user.username == chat.user.username %}
+            <p style="color: yellow;" class="message2">Ваше сообщение</p>
+            {% endif %}
+            {% if chat.user.username != '' and  chat.user.is_admin or chat.user.is_staff %}
+                <p style="color: red;" class="message2">От Админа: {{ chat.user.username }}</p>
+            {% elif chat.user.username != '' %}
+            <p style="color: green;" class="message2">От Пользователя: {{ chat.user.username }}</p>
+            {% else %}
+                <p class="message2">От анонимного пользовател</p>
+            {% endif %}
+            <h5 class="color-green">{{ chat.message }}</h5>
+            {% if request.user.username == chat.user.username %}
+            <a class="message2" href="{% url 'chat:delete' chat.id %}">
+                <img class="mx-new" src="{% static 'deps/icons/trash3-fill.svg' %}"
+                 width="16" height="16">
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="message1">
+            <h3>Чат пока пуст</h3>
+        </div>
+        {% endif %}
+        <div class="make-message">
+            <form method="post" action="{% url 'chat:chat' %}">
+                {% csrf_token %}
+                <input placeholder="Введите текст..." name="message" class="message" type="text">
+                <button type="submit" class="btn btn-outline-success">→</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

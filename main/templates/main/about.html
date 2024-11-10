@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block modal_cart %}
+{% include 'includes/cart_button.html' %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+<style>
+    .container-about {
+        text-align: center;
+    }
+</style>
+<div class="container container-about mt-5 bg-white custom-shadow rounded">
+    <h2 ><strong>{{content}}</strong></h2>
+    <h5 >Наш магазин создан для того, чтобы делать ваши покупки удобными, а самое главное - доступными.</h5>
+    <h3 >Shkab Web Studio</h3>
+    <h5 >Shkab Web Studio - лучший вариант для вашего сайта. В нашей студии работают только профессиональные программисты с огромным стажем работы. Еcли вы желаете получить готовый сайт, при запуске и работе с которым, у вас не будет никаких проблем, обращайтесь к нам. И всегда помните, Shkab Web Studio - ваш выбор!</h5>
+    <h3 >Возникли проблемы?</h3>
+    <h3 >8 902 068 22 39</h3>
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Home Python Hub Studio 2023</p>
+    </div>
+</footer>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load goodstags %}
+
+{% block modal_cart %}
+{% include 'includes/cart_button.html' %}
+{% endblock %}
+
+{% block content %}
+<style>
+    .color-red {
+        color: red;
+    }
+    .bg-white {
+        border-radius: 8px;
+    }
+</style>
+<div class="row bg-white custom-shadow">
+    <!-- Форма фильтров -->
+    <div class="dropdown mb-2">
+        <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Фильтры
+        </button>
+
+        <form action="{% if request.GET.q %}{% url "goods:search" %}{% else %}{% url "goods:index" slug_url %}{% endif %}" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+            <div id="tick" class="form-check text-white mx-3">
+                <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault" value="on" {% if request.GET.on_sale == 'on' %}checked{% endif %}>
+                {% if request.GET.q %}
+                    <input type="hidden" name="q" value="{{ request.GET.q }}">
+                {% endif %}
+                <label class="form-check-label" for="flexCheckDefault">
+                    Товары по акции
+                </label>
+            </div>
+            <p class="text-white mx-3 mt-3">Сортировать:</p>
+            <div class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default"
+                {% if not request.GET.order_by or request.GET.order_by == 'default' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault1">
+                    Все товары
+                </label>
+            </div>
+            <div class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="price" 
+                {% if request.GET.order_by == 'price' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    От дешевых к дорогим
+                </label>
+            </div>
+            <div class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="-price"
+                {% if request.GET.order_by == '-price' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault3">
+                    От дорогих к дешевым
+                </label>
+            </div>
+            <div id="liked" class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="is_liked"
+                {% if request.GET.order_by == 'is_liked' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault3">
+                    Понравилось
+                </label>
+            </div>
+            <div id="disliked" class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="is_disliked"
+                {% if request.GET.order_by == 'is_disliked' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault3">
+                    Не понравилось
+                </label>
+            </div>
+            <div class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="out"
+                {% if request.GET.order_by == 'out' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault3">
+                    Кончающиеся
+                </label>
+            </div>
+            <div class="form-check text-white mx-3">
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="in"
+                {% if request.GET.order_by == 'in' %}checked{% endif %}>
+                <label class="form-check-label" for="flexRadioDefault3">
+                    Не кончающиеся
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary mx-3 mt-3">Применить</button>
+        </form>
+    </div>
+    <!-- Карта товара -->
+     {% for product in products %}
+    <div class="col-lg-4 col-md-6 p-4">
+        <div class="card border-primary rounded custom-shadow-card">
+            <img src="{{product.image.url}}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <a href="{% url 'goods:product' product.slug %}">
+                    <p class="card-title">{{product.name}}</p>
+                </a>
+                <p class="card-text text-truncate">{{product.description}}</p>
+                <p class="product_id">Артикул: {{product.display_id}}</p>
+                {% if product.is_little %}
+                <p class="card-text color-red">Осталось {{product.quantity}} товаров</p>
+                {% else %}
+                <p class="card-text">Большое количество</p>
+                {% endif %}
+                {% if product.likes %}
+                <h6>Оценили: {{ product.likes }}</h6>
+                {% else %}
+                <h6>Пока никто не оценил</h6>
+                {% endif %}
+                <div class="d-flex justify-content-between">
+                    {% if product.discount %}
+                    <p><s>{{ product.price }}</s> $</p>
+                    <p><strong>{{product.sell_price }} $</strong></p>
+                    <span class="badge bg-warning text-dark">Скидка {{product.discount}} %</span>
+                    {% else %}
+                        {% if product.price != product.sell_price %}
+                        <p><s>{{ product.price }}</s> $</p>
+                        <p><strong>{{product.sell_price}} $</strong></P>
+                        {% else %}
+                        <p><strong>{{product.sell_price}} $</strong></P>
+                        {% endif %}
+                    {% endif %}
+                    {% if product.is_liked and not product.discount %}
+                        
+                        <span class="badge bg-warning text-dark">Скидка 10 % за оценку</span>
+                    {% endif %}
+                    {% if product.quantity > 0 %}
+                    <!-- <p><strong>100.00 $</strong></p> -->
+                    <a href="{% url "carts:cart_add" %}" class="btn add-to-cart"
+                        data-product-id="{{ product.id }}">
+                            {% csrf_token %}
+                            <img class="mx-1" src="{% static "deps/icons/cart-plus.svg" %}" alt="Catalog Icon"
+                                width="32" height="32">
+                    </a>
+                    <a href="{% url "carts:chosens_add" %}" class="btn add-to-chosen"
+                        data-product-id="{{ product.id }}">
+                            {% csrf_token %}
+                            <img style="width: 32px;" src="https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/heart-love-like-likes-loved-favorite-256.png" alt="">
+                    </a>
+                    {% else %}
+                    <h4>Товара нет в наличии</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center my-4">
+        <div class="custom-shadow d-flex">
+            <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+              <a class="page-link" href="{% if products.has_previous %}?{% change_params page=products.previous_page_number %}{% else %}#{% endif %}">Назад</a>
+            </li>
+            {% for page in products.paginator.page_range %}
+            <li class="page-item {% if products.number == page %}active{% endif %}">
+                <a class="page-link" href="?{% change_params page=page  %}">{{page}}</a></li>
+            {% endfor %}
+            <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{% if products.has_next %}?{% change_params page=products.next_page_number  %}{% else %}#{% endif %}">Вперёд</a>
+              </li>
+        </div>
+    </ul>
+</nav>
+{% endblock %}
+
+
+{% block footer %}
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Shkab Web Studio 2024</p>
+    </div>
+</footer>
+{% endblock %}
